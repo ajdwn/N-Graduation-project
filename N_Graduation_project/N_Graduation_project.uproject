@@ -7,7 +7,11 @@
 		{
 			"Name": "N_Graduation_project",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"CoreUObject",
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
