@@ -30,11 +30,5 @@ void ATester::UpdateEntityData()
 	if (UABGameSingleton::Get().GetEntityDataByGroupID(EntityGroupID, EntityData))
 	{
 		SetActorLabel(EntityData.EntityName);
-
-		UE_LOG(LogTemp, Log, TEXT("테스터 업데이트: %s"), *EntityData.EntityName);
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Log, TEXT("업데이트실패"));
 	}
 }
