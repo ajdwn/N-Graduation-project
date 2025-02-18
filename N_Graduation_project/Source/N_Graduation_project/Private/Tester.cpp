@@ -1,0 +1,40 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Tester.h"
+
+// Sets default values
+ATester::ATester()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+	
+}
+
+// Called when the game starts or when spawned
+void ATester::BeginPlay()
+{
+	Super::BeginPlay();
+	UpdateEntityData();
+}
+
+// Called every frame
+void ATester::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+void ATester::UpdateEntityData()
+{
+	if (UABGameSingleton::Get().GetEntityDataByGroupID(EntityGroupID, EntityData))
+	{
+		SetActorLabel(EntityData.EntityName);
+
+		UE_LOG(LogTemp, Log, TEXT("테스터 업데이트: %s"), *EntityData.EntityName);
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Log, TEXT("업데이트실패"));
+	}
+}
