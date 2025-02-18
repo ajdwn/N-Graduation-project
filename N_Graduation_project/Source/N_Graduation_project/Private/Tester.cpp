@@ -8,14 +8,33 @@ ATester::ATester()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
+	// UStaticMeshComponent을 생성자에서 CreateDefaultSubobject로 생성
+	// 생성자에서 미리 생성해줘야 nullptr 오류가 뜨지 않음 
+	m_pMeshCom = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+
+	// RootComponent 설정 -> 안 하면 m_pMeshCom nullptr 오류 발생
+	if (!m_pMeshCom)
+	{
+		m_pMeshCom = NewObject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
+		m_pMeshCom->RegisterComponent();
+		RootComponent = m_pMeshCom;	
+	}
 }
 
 // Called when the game starts or when spawned
 void ATester::BeginPlay()
 {
 	Super::BeginPlay();
-	SetEntityData();
+
+	if (!m_pMeshCom)
+	{
+		m_pMeshCom = NewObject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
+		m_pMeshCom->RegisterComponent();
+		RootComponent = m_pMeshCom;
+	}
+
+	UpdateEntityData();
 }
 
 // Called every frame
@@ -25,11 +44,104 @@ void ATester::Tick(float DeltaTime)
 
 }
 
-void ATester::SetEntityData()
+void ATester::UpdateEntityData()
 {
 	if (UABGameSingleton::Get().GetEntityDataByGroupID(EntityGroupID, EntityData))
 	{
 		SetActorLabel(EntityData.EntityName);
+		SetMaxHp(EntityData.HP);
+		SetMoveSpeed(EntityData.MoveSpeed);
+		SetPreset(EntityData.PresetReference);
 
+		UE_LOG(LogABGameSingleton, Error, TEXT("Entity Name: %s, HP: %d, Move Speed: %d"),
+			*EntityData.EntityName, EntityData.HP, EntityData.MoveSpeed);
+	}
+}
+
+void ATester::SetMaxHp(int32 MaxHp)
+{
+	currentHp = MaxHp;
+}
+
+void ATester::SetMoveSpeed(int32 MoveSpeed)
+{
+	currentSpeed = MoveSpeed;
+}
+
+void ATester::SetPreset(FString PresetReference)
+{
+	currentPreset = PresetReference;
+
+	// 프리셋 이름마다 메시 에셋 파일 할당
+	if (currentPreset == "PCPreset.uasset")
+	{
+		// 언리얼 콘텐츠 브라우저에서 에셋 파일 우클릭 ->  !!레퍼런스!! 복사 -> 텍스트로 넣어주기
+	
+		// FObjectFinder는 반드시 생성자에서만 사용 가능, 함수 내에서 사용할 시 바로 크래시 발생
+		//ConstructorHelpers::FObjectFinder<UStaticMesh> BodyMesh(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Chair.SM_Chair'"));
+		/*if (BodyMesh.Succeeded())
+		{
+			
+		}*/
+		//m_pMeshCom->SetStaticMesh(BodyMesh.Object);
+		//RootComponent = m_pMeshCom;
+
+		//FString MeshPath = TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Chair.SM_Chair'");
+		//UStaticMesh* LoadedMesh = LoadObject<UStaticMesh>(nullptr, *MeshPath);
+		
+		// 에디터 실행 시 문제없이 메시를 로드하기 위해 FSoftObjectPath를 사용해 비동기 로딩 
+		FSoftObjectPath MeshPath(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Chair.SM_Chair'"));
+
+		UStaticMesh* LoadedMesh = Cast<UStaticMesh>(MeshPath.TryLoad());
+		if (LoadedMesh)
+		{
+			// 스켈레탈 메시를 사용할 경우 SetSkeletalMesh() 사용
+			m_pMeshCom->SetStaticMesh(LoadedMesh);
+		}
+	}
+
+
+	if (currentPreset == "WildBoarPreset.uasset")
+	{
+		FSoftObjectPath MeshPath(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Bush.SM_Bush'"));
+
+		UStaticMesh* LoadedMesh = Cast<UStaticMesh>(MeshPath.TryLoad());
+		if (LoadedMesh)
+		{
+			m_pMeshCom->SetStaticMesh(LoadedMesh);
+		}
+	}
+
+	if (currentPreset == "InpermonPreset.uasset")
+	{
+		FSoftObjectPath MeshPath(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_TableRound.SM_TableRound'"));
+
+		UStaticMesh* LoadedMesh = Cast<UStaticMesh>(MeshPath.TryLoad());
+		if (LoadedMesh)
+		{
+			m_pMeshCom->SetStaticMesh(LoadedMesh);
+		}
+	}
+
+	if (currentPreset == "FreezardPreset.uasset")
+	{
+		FSoftObjectPath MeshPath(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Statue.SM_Statue'"));
+
+		UStaticMesh* LoadedMesh = Cast<UStaticMesh>(MeshPath.TryLoad());
+		if (LoadedMesh)
+		{
+			m_pMeshCom->SetStaticMesh(LoadedMesh);
+		}
+	}
+
+	if (currentPreset == "StoneGolemPreset.uasset")
+	{
+		FSoftObjectPath MeshPath(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Props/SM_Lamp_Ceiling.SM_Lamp_Ceiling'"));
+
+		UStaticMesh* LoadedMesh = Cast<UStaticMesh>(MeshPath.TryLoad());
+		if (LoadedMesh)
+		{
+			m_pMeshCom->SetStaticMesh(LoadedMesh);
+		}
 	}
 }

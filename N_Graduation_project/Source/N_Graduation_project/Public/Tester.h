@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+// #include "CoreMinimal.h"
+#include "EngineMinimal.h" // UStaticMeshComponent를 사용하기 위해 변경
 #include "GameFramework/Actor.h"
 #include "ABEntityData.h" // Entity Data 구조체
 #include "ABGameSingleton.h"
@@ -35,6 +36,28 @@ public:
 
 	// 설정한 GroupID를 키 값으로 가져온 데이터를 적용하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Data")
-	void SetEntityData();
+	void UpdateEntityData();
+	
+	int32 maxHp;
+	int32 moveSpeed;
+	FString normalSkill;
+	FString specialSkill;
+	FString presetReference;
+
+
+	int32 currentHp;
+	int32 currentSpeed;
+	FString currentPreset;
+	
+	// MaxHP를 설정하는 함수
+	void SetMaxHp(int32 MaxHp);
+	// MoveSpeed를 설정하는 함수
+	void SetMoveSpeed(int32 MoveSpeed);
+	// Preset을 설정하는 함수
+	void SetPreset(FString PresetReference);
+
+	// 메시 변경 테스트를 위해 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* m_pMeshCom;
 
 };
