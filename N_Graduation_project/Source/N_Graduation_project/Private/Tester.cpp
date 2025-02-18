@@ -15,7 +15,7 @@ ATester::ATester()
 void ATester::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateEntityData();
+	SetEntityData();
 }
 
 // Called every frame
@@ -25,7 +25,7 @@ void ATester::Tick(float DeltaTime)
 
 }
 
-void ATester::UpdateEntityData()
+void ATester::SetEntityData()
 {
 	if (UABGameSingleton::Get().GetEntityDataByGroupID(EntityGroupID, EntityData))
 	{
