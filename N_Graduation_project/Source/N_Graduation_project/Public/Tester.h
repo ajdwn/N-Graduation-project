@@ -35,6 +35,6 @@ public:
 
 	// 설정한 GroupID를 키 값으로 가져온 데이터를 적용하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Data")
-	void UpdateEntityData();
+	void SetEntityData();
 
 };

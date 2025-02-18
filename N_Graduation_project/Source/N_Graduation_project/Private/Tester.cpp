@@ -30,5 +30,6 @@ void ATester::SetEntityData()
 	if (UABGameSingleton::Get().GetEntityDataByGroupID(EntityGroupID, EntityData))
 	{
 		SetActorLabel(EntityData.EntityName);
+
 	}
 }
