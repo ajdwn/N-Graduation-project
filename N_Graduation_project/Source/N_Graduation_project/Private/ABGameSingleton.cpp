@@ -7,22 +7,37 @@ UABGameSingleton::UABGameSingleton()
 	// 만든 DataTable 주소를 가져온다.
 	// DataTable은 맵 형태로 Key,Value 값으로 들어온다.
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableRef(TEXT("/Game/DataTable/EntityDataTable.EntityDataTable"));
-	if (nullptr != DataTableRef.Object)
-	{
-		// 갯수가 맞는지 체크
-		const UDataTable* DataTable = DataTableRef.Object;
-		check(DataTable->GetRowMap().Num() > 0);
 
-		// Key값은 순차적으로 오기 때문에 Key값은 필요없고, Value값만 Array에 저장
-		TArray<uint8*> ValueArray;
-		DataTable->GetRowMap().GenerateValueArray(ValueArray);
-		Algo::Transform(ValueArray, EntityDataTable,
-			[](uint8* Value)
-			{
-				return *reinterpret_cast<FABEntityData*>(Value);
-			}
-		);
+	//if (nullptr != DataTableRef.Object)
+	//{
+	//	// 갯수가 맞는지 체크
+	//	const UDataTable* DataTable = DataTableRef.Object;
+	//	check(DataTable->GetRowMap().Num() > 0);
+	//	// Key값은 순차적으로 오기 때문에 Key값은 필요없고, Value값만 Array에 저장
+	//	TArray<uint8*> ValueArray;
+	//	DataTable->GetRowMap().GenerateValueArray(ValueArray);
+	//	Algo::Transform(ValueArray, EntityDataTable,
+	//		[](uint8* Value)
+	//		{
+	//			return *reinterpret_cast<FABEntityData*>(Value);
+	//		}
+	//	);
+	//}
+
+	// DataTable, DataMap에 데이터 저장
+	if (DataTableRef.Succeeded())
+	{
+		UDataTable* DataTable = DataTableRef.Object;
+		TArray<FABEntityData*> Rows;
+		DataTable->GetAllRows<FABEntityData>(TEXT(""), Rows);
+
+		for (FABEntityData* Row : Rows)
+		{
+			EntityDataTable.Add(*Row);
+			EntityDataMap.Add(Row->EntityGroupID, *Row);
+		}
 	}
+
 	/*	
 	for (const FABEntityData& EntityData : EntityDataTable)
 		{
@@ -51,4 +66,15 @@ UABGameSingleton& UABGameSingleton::Get()
 	// 코드의 흐름을 위해서 return값의 인스턴스를 생성하고 리턴함
 	UE_LOG(LogABGameSingleton, Error, TEXT("Invalide Game Singleton"));
 	return *NewObject<UABGameSingleton>();
+}
+
+// Entity GroupID를 키 값으로 Data 검색 
+bool UABGameSingleton::GetEntityDataByGroupID(const FString& GroupID, FABEntityData& OutEntityData) const
+{
+	if (const FABEntityData* FoundData = EntityDataMap.Find(GroupID))
+	{
+		OutEntityData = *FoundData;
+		return true;
+	}
+	return false;
 }
