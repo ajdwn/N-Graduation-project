@@ -7,21 +7,27 @@
 UCLASS()
 class N_GRADUATION_PROJECT_API UEntityWidget : public UUserWidget
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    // HP 업데이트
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    void UpdateHealthBar(int32 NewHealth);
+	// HP 업데이트
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void UpdateHealthBar(int32 NewHealth);
 
-    // 이름 업데이트
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    void SetEntityName(FText NewName);
+	// 이름 업데이트
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetEntityName(FText NewName);
 
-    // UI 위젯 참조
-    UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    class UProgressBar* HealthBar;
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	class UProgressBar* HealthBar;
 
-    UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    class UTextBlock* EntityName;
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	class UTextBlock* EntityName;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Entity")
+	float HP;
+
+	UFUNCTION(BlueprintCallable, Category = "Entity")
+	float GetHP() const { return HP; }
+
 };
