@@ -81,9 +81,9 @@ float ATotem::TakeDamage(float DamageAmount,FDamageEvent const& DamageEvent,ACon
 {
 	TotemHP -= DamageAmount;
 
-	if(TotemHP <= 0.0f)
+	if(TotemHP < 0.0f)
 	{
-		UGameplayStatics::SpawnSoundAtLocation(this,BreakObjectSound,GetOwner()->GetActorLocation());
+		//UGameplayStatics::SpawnSoundAtLocation(this,BreakObjectSound,GetOwner()->GetActorLocation());
 		Destroy();
 	}
 
