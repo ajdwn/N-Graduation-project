@@ -1248,8 +1248,10 @@ void UPlayerSkillComponent::SkillEffect(const FString& SkillNameID)
 									AICon->StopMovement();
 									if(AICon->BrainComponent)
 										AICon->BrainComponent->StopLogic(TEXT("Stunned"));
-
-									Entity->bIsVisibleEffectStun = true;
+									if(Target->ActorHasTag(FName("Boss")))
+									{
+									}
+									else Entity->bIsVisibleEffectStun = true;
 
 									// 2초 후 리스타트
 									FTimerHandle TimerHandle;
