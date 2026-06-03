@@ -126,7 +126,7 @@ void APlayerProjectile::OnOverlap(UPrimitiveComponent* OverlappedComp,AActor* Ot
 		}
 	}
 
-	if(OtherActor->ActorHasTag("FireCrystal"))
+	if(OtherActor->ActorHasTag("FireCrystal")) //보스
 	{
 		UE_LOG(LogTemp,Warning,TEXT("FireCrystal activated!"));
 		OtherActor->Destroy();
@@ -134,7 +134,7 @@ void APlayerProjectile::OnOverlap(UPrimitiveComponent* OverlappedComp,AActor* Ot
 	AN_Graduation_projectCharacter* Player = GetOwner<AN_Graduation_projectCharacter>();
 
 	// 몬스터만 처리
-	if(OtherActor->ActorHasTag("Monster")||OtherActor->ActorHasTag("Object")|| OtherActor->ActorHasTag("FireFloor")||OtherActor->ActorHasTag("FrozeFloor")||OtherActor->ActorHasTag("FireCrystal"))
+	if(OtherActor->ActorHasTag("Monster")||OtherActor->ActorHasTag("Object")|| OtherActor->ActorHasTag("FireFloor")||OtherActor->ActorHasTag("FrozeFloor")||OtherActor->ActorHasTag("FireCrystal")||OtherActor->ActorHasTag("Boss"))
 	{
 		UE_LOG(LogTemp,Warning,TEXT("OtherActor->ActorHasTag(Floor"));
 
@@ -255,6 +255,7 @@ void APlayerProjectile::ApplyFireDOT(AActor* Target,float DamagePerSecond,float 
 		int32 TickCount = FMath::FloorToInt(ApplyDuration);
 		for(int32 i = 1; i <= TickCount; ++i)
 		{
+			if(!Target || DamagePerSecond <= 0.f || ApplyDuration <= 0.f) return;
 			FTimerHandle FireTickHandle;
 			// [캡처](매개변수)->Return Type{ 구현 몸체 } 
 			FTimerDelegate FireTickDelegate = FTimerDelegate::CreateLambda([=,this]()
