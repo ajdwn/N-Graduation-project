@@ -1,6 +1,6 @@
-# N Graduation Project
+# Morpher
 
-Unreal Engine 5.4 기반의 3D 액션 RPG 졸업 프로젝트입니다. 플레이어가 몬스터를 처치해 도감을 해금하고, 해금된 몬스터 프리셋으로 변신해 다른 스킬과 전투 방식을 사용하는 구조를 중심으로 제작했습니다.
+Unreal Engine 5.4 기반의 3D 액션 어드벤처 RPG 졸업 프로젝트입니다. 플레이어가 몬스터를 처치해 도감을 해금하고, 해금된 몬스터 프리셋으로 변신해 다른 스킬과 전투 방식을 사용하는 구조를 중심으로 제작했습니다.
 
 프로젝트는 C++로 핵심 시스템을 구현하고, Unreal Blueprint와 에셋을 결합해 전투, 보스 패턴, 레벨 진행, UI, 저장/불러오기 흐름을 구성했습니다.
 
@@ -8,7 +8,7 @@ Unreal Engine 5.4 기반의 3D 액션 RPG 졸업 프로젝트입니다. 플레�
 
 | 항목 | 내용 |
 | --- | --- |
-| 장르 | 3D 액션 RPG / 어드벤처 |
+| 장르 | 3D 액션 어드벤처 RPG |
 | 엔진 | Unreal Engine 5.4 |
 | 개발 언어 | C++ / Blueprint |
 | 주요 모듈 | Enhanced Input, UMG, AI Module, NavigationSystem, GameplayTasks, Niagara |
@@ -127,6 +127,6 @@ N_Graduation_project/
 
 1. Unreal Engine 5.4를 설치합니다.
 2. 저장소를 클론합니다.
-3. `N_Graduation_project/N_Graduation_project.uproject`를 Unreal Editor로 엽니다.
-4. 필요한 경우 Visual Studio에서 C++ 프로젝트 파일을 생성하고 빌드합니다.
+3. `N_Graduation_project/N_Graduation_project.uproject`를 찾아 파일을 우클릭하고 Generate Visual Studio project files를 실행합니다.
+4. 필요한 경우 생성된 N_Graduation_project/N_Graduation_project.sln을 Visual Studio 2022로 엽니다.
 5. Unreal Editor에서 플레이 모드로 실행합니다.
