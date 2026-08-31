@@ -21,9 +21,9 @@ UMyPlayerStatComponent::UMyPlayerStatComponent()
 
 UMyCharacterWidget* UMyPlayerStatComponent::GetHUD() const
 {
-	if (AActor* Owner = GetOwner())
+	if(AActor* Owner = GetOwner())
 	{
-		if (UWidgetActor* WidgetActor = Owner->FindComponentByClass<UWidgetActor>())
+		if(UWidgetActor* WidgetActor = Owner->FindComponentByClass<UWidgetActor>())
 		{
 			return WidgetActor->GetHUDWidget();
 		}
@@ -40,7 +40,7 @@ void UMyPlayerStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+	if(ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
 		OwnerPlayer = Cast<AN_Graduation_projectCharacter>(CharacterOwner);
 	}
@@ -51,12 +51,13 @@ void UMyPlayerStatComponent::BeginPlay()
 
 void UMyPlayerStatComponent::SetHP(float NewHP)
 {
-//	PastCurrentHP = CurrentHP;
-	CurrentHP = FMath::Clamp(NewHP, 0.0f, NewMaxHP); // 이게 핵심!
+	//	PastCurrentHP = CurrentHP;
+	CurrentHP = FMath::Clamp(NewHP,0.0f,NewMaxHP);
 	UpdateHUD();
+	UE_LOG(LogTemp,Error,TEXT("Now Hp:%f"),NewHP);
 
 
-	if (CurrentHP == 0)
+	if(CurrentHP == 0)
 	{
 		OwnerPlayer->OnPlayerDead();
 	}
@@ -81,42 +82,44 @@ void UMyPlayerStatComponent::SetMana(int NewMana)
 
 void UMyPlayerStatComponent::UseMana(int ManaAmount)
 {
-	if (CurrentMana >= ManaAmount)
+	if(CurrentMana >= ManaAmount)
 	{
 		SetMana(CurrentMana - ManaAmount);
 	}
+	else 		UE_LOG(LogTemp,Error,TEXT("마나가 부족합니다"));
+
 }
 
 void UMyPlayerStatComponent::RegenerateMana()
 {
-	if (CurrentMana < 10)
+	if(CurrentMana < 10)
 	{
 		SetMana(CurrentMana + 1);
 	}
-	if (CurrentMana >= 2) {
+	if(CurrentMana >= 2) {
 		Change = true;
 	}
 }
 
-void UMyPlayerStatComponent::TransformToEntity(FString Name, int HP, int Mana)
+void UMyPlayerStatComponent::TransformToEntity(FString Name,int HP,int Mana)
 {
 	auto* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if(!MyGameInstance) return;
-	UE_LOG(LogTemp,Error,TEXT("Loadgame TransformToEntity:%s, %d, %d"),*Name, HP,Mana);
+	UE_LOG(LogTemp,Error,TEXT("Loadgame TransformToEntity:%s, %d, %d"),*Name,HP,Mana);
 
-	if (CurrentMana >= Mana)
+	if(CurrentMana >= Mana)
 	{
 		MyGameInstance->PlayerFullHP=HP;
 		Change = true;
 		PastMaxHP = NewMaxHP;
 		PastCurrentHP = CurrentHP;
-		UE_LOG(LogTemp, Log, TEXT("maxhp %f %f "), PastCurrentHP,PastMaxHP);
+		UE_LOG(LogTemp,Log,TEXT("maxhp %f %f "),PastCurrentHP,PastMaxHP);
 		if(CurrentHP<=0){
 			CurrentHP=150;
 		}
-		if (UMyCharacterWidget* HUD = GetHUD())
+		if(UMyCharacterWidget* HUD = GetHUD())
 		{
-			GetWorld()->GetTimerManager().SetTimer(ManaRegenTimerHandle, this, &UMyPlayerStatComponent::RegenerateMana, 4.0f, true);
+			GetWorld()->GetTimerManager().SetTimer(ManaRegenTimerHandle,this,&UMyPlayerStatComponent::RegenerateMana,4.0f,true);
 
 			MonsterName = Name;
 			HUD->SkillName = MonsterName;
@@ -130,40 +133,40 @@ void UMyPlayerStatComponent::TransformToEntity(FString Name, int HP, int Mana)
 			HUD->CanNomal = true;
 			HUD->CanSpecial = true;
 
-			HUD->UpdateNomalSkillCooldown(0.0f, true, false);
-			HUD->UpdateSpecialSkillCooldown(0.0f, false, true);
+			HUD->UpdateNomalSkillCooldown(0.0f,true,false);
+			HUD->UpdateSpecialSkillCooldown(0.0f,false,true);
 		}
 
-		
-		UE_LOG(LogTemp, Log, TEXT("maxhp2 %f %f %d "), PastCurrentHP, PastMaxHP, NewMaxHP);
-		if (PastCurrentHP == PastMaxHP)
+
+		UE_LOG(LogTemp,Log,TEXT("maxhp2 %f %f %d "),PastCurrentHP,PastMaxHP,NewMaxHP);
+		if(PastCurrentHP == PastMaxHP)
 		{
 			SetMaxHp(HP);
-			UseMana(Mana);
 			SetHP(HP);
-		}
-		else
+		} else
 		{
-			float NewHP = ((CurrentHP / PastMaxHP) * 100 + 10) * (HP / 100);
-			SetMaxHp(HP);
-			SetHP(FMath::Min(FMath::CeilToFloat(NewHP), (float)NewMaxHP));
-			UseMana(Mana);
+			// 변신 전 HP 비율을 유지
+			float HPPercent = PastCurrentHP / PastMaxHP;
+			float NewHP = HPPercent * HP;
 
+			SetMaxHp(HP);
+			SetHP(FMath::CeilToFloat(NewHP));
 		}
-	}
-	else
+
+		UseMana(Mana);
+	} else
 	{
 		Change = false;
-		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("//마나가 부족합니다")));
-	}
+}
 }
 
 void UMyPlayerStatComponent::UpdateHUD()
 {
-	if (UMyCharacterWidget* HUD = GetHUD())
+	if(UMyCharacterWidget* HUD = GetHUD())
 	{
-		HUD->UpdateHPBar(CurrentHP, NewMaxHP);
+		HUD->UpdateHPBar(CurrentHP,NewMaxHP);
 		HUD->UpdateMana(CurrentMana);
 		HUD->ChangeIcon(MonsterName);
 	}
 }
+
